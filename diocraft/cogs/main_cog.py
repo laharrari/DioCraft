@@ -18,10 +18,6 @@ class MainCog(commands.Cog, name = "main"):
         self.bot = bot
 
     @commands.command()
-    async def ping(self, ctx: commands.Command):
-        await ctx.send("Pong")
-
-    @commands.command()
     async def awl(self, ctx: commands.Command):
         if (await self.privilegeCheck(ctx, "Admins")):
             player_name = ctx.message.content[5:]
@@ -38,6 +34,10 @@ class MainCog(commands.Cog, name = "main"):
     @commands.command()
     async def wl(self, ctx: commands.Command):
         await self.listWhitelist(ctx)
+
+    @commands.command()
+    async def online(self, ctx: commands.Command):
+        await self.listPlayers(ctx)
 
     @commands.command()
     async def help(self, ctx: commands.Command):
@@ -64,6 +64,20 @@ class MainCog(commands.Cog, name = "main"):
         resp = self.mcr.command("/whitelist list").split(" ")
         result = "The following {} players are whitelisted:\n".format(resp[2])
         resp = resp[5:]
+        lastName = resp[len(resp) - 1]
+        resp = resp[:-1]
+
+        for name in resp:
+            result += name[:-1] + "\n"
+
+        result += lastName
+
+        await ctx.send(result)
+
+    async def listPlayers(self, ctx: commands.Command):
+        resp = self.mcr.command("/list").split(" ")
+        result = "There {} players online:\n".format(resp[2])
+        resp = resp[10:]
         lastName = resp[len(resp) - 1]
         resp = resp[:-1]
 
