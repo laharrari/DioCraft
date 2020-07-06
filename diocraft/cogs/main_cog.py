@@ -21,11 +21,19 @@ class MainCog(commands.Cog, name = "main"):
     async def ping(self, ctx: commands.Command):
         await ctx.send("Pong")
 
-    @commands.command(aliases=["wl"])
-    async def whitelist(self, ctx: commands.Command):
+    @commands.command()
+    async def awl(self, ctx: commands.Command):
         if (await self.privilegeCheck(ctx)):
-            await ctx.send("You can whitelist")
-            # await self.mcr.command("/whitelist add {}".format(player_name))
+            player_name = ctx.message.content[5:]
+            resp = self.mcr.command("/whitelist add {}".format(player_name))
+            await ctx.send(resp)
+
+    @commands.command()
+    async def dwl(self, ctx: commands.Command):
+        if (await self.privilegeCheck(ctx)):
+            player_name = ctx.message.content[5:]
+            resp = self.mcr.command("/whitelist remove {}".format(player_name))
+            await ctx.send(resp)
 
     async def privilegeCheck(self, ctx: commands.Command):
         is_admin = False
@@ -33,9 +41,8 @@ class MainCog(commands.Cog, name = "main"):
         for role in ctx.message.author.roles:
             if (role.name == "Admins"):
                 is_admin = True
-                await ctx.send("Is Admin")
         
         if (not is_admin):
-            await ctx.send("Is not Admin")
+            await ctx.send("{}, is not an Admin.".format(ctx.message.author.display_name))
         
         return is_admin
