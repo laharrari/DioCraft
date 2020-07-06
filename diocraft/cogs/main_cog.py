@@ -35,6 +35,14 @@ class MainCog(commands.Cog, name = "main"):
             resp = self.mcr.command("/whitelist remove {}".format(player_name))
             await ctx.send(resp)
 
+    @commands.command()
+    async def help(self, ctx: commands.Command):
+        msg = "Thank you for using DioCraft! It is still currently under development :)\n\n"
+        msg += "/awl <name> - To add someone to the server whitelist.\n"
+        msg += "/dwl <name> - To remove someone from the server whitelist.\n\n"
+        msg += "If you have any questions or suggestions, please contact primal#7602! Thank you!"
+        await ctx.send(msg)
+
     async def privilegeCheck(self, ctx: commands.Command):
         is_admin = False
 
