@@ -19,34 +19,38 @@ class MainCog(commands.Cog, name = "main"):
 
     @commands.command()
     async def awl(self, ctx: commands.Command):
-        if (await self.privilegeCheck(ctx, "Admins")):
+        if (await self.privilegeCheck(ctx, "Admins") and await self.channelCheck(ctx)):
             player_name = ctx.message.content[5:]
             resp = self.mcr.command("/whitelist add {}".format(player_name))
             await ctx.send(resp)
 
     @commands.command()
     async def dwl(self, ctx: commands.Command):
-        if (await self.privilegeCheck(ctx, "Admins")):
+        if (await self.privilegeCheck(ctx, "Admins") and await self.channelCheck(ctx)):
             player_name = ctx.message.content[5:]
             resp = self.mcr.command("/whitelist remove {}".format(player_name))
             await ctx.send(resp)
     
     @commands.command()
     async def wl(self, ctx: commands.Command):
-        await self.listWhitelist(ctx)
+        if (await self.channelCheck(ctx)):
+            await self.listWhitelist(ctx)
 
     @commands.command()
     async def online(self, ctx: commands.Command):
-        await self.listPlayers(ctx)
+        if (await self.channelCheck(ctx)):
+            await self.listPlayers(ctx)
 
     @commands.command()
     async def help(self, ctx: commands.Command):
-        msg = "Thank you for using DioCraft! It is still currently under development :)\n\n"
-        msg += "/wl - Display list of all players that are whitelisted.\n"
-        msg += "/awl <name> - To add someone to the server whitelist.\n"
-        msg += "/dwl <name> - To remove someone from the server whitelist.\n\n"
-        msg += "If you have any questions or suggestions, please contact primal#7602! Thank you!"
-        await ctx.send(msg)
+        if (await self.channelCheck(ctx)):
+            msg = "Thank you for using DioCraft! It is still currently under development :)\n\n"
+            msg += "/online - Display list of all players that are online.\n"
+            msg += "/wl - Display list of all players that are whitelisted.\n"
+            msg += "/awl <name> - To add someone to the server whitelist.\n"
+            msg += "/dwl <name> - To remove someone from the server whitelist.\n\n"
+            msg += "If you have any questions or suggestions, please contact primal#7602! Thank you!"
+            await ctx.send(msg)
 
     async def privilegeCheck(self, ctx: commands.Command, roleName):
         is_admin = False
@@ -59,6 +63,15 @@ class MainCog(commands.Cog, name = "main"):
             await ctx.send("{}, is not an Admin.".format(ctx.message.author.display_name))
         
         return is_admin
+
+    async def channelCheck(self, ctx: commands.Command):
+        is_channel = False
+
+        # Change this to list to hold more channels.
+        if (ctx.message.channel.id == 729859164209283104):
+            is_channel = True
+
+        return is_channel
 
     async def listWhitelist(self, ctx: commands.Command):
         resp = self.mcr.command("/whitelist list").split(" ")
