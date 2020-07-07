@@ -19,7 +19,7 @@ class MainCog(commands.Cog, name = "main"):
 
     @commands.command()
     async def awl(self, ctx: commands.Command):
-        if (await self.privilegeCheck(ctx, "Admins") and await self.channelCheck(ctx)):
+        if (await self.privilegeCheck(ctx, "Minecraft") and await self.channelCheck(ctx)):
             player_name = ctx.message.content[5:]
             resp = self.mcr.command("/whitelist add {}".format(player_name))
             await ctx.send(resp)
@@ -60,7 +60,7 @@ class MainCog(commands.Cog, name = "main"):
                 is_admin = True
         
         if (not is_admin):
-            await ctx.send("{}, is not an Admin.".format(ctx.message.author.display_name))
+            await ctx.send("{}, does not have permission.".format(ctx.message.author.display_name))
         
         return is_admin
 
