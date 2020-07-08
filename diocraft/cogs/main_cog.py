@@ -19,14 +19,16 @@ class MainCog(commands.Cog, name = "main"):
 
     @commands.command()
     async def awl(self, ctx: commands.Command):
-        if (await self.privilegeCheck(ctx, "Minecraft") and await self.channelCheck(ctx)):
+        allowed_roles = ["Minecraft"]
+        if (await self.privilegeCheck(ctx, allowed_roles) and await self.channelCheck(ctx)):
             player_name = ctx.message.content[5:]
             resp = self.mcr.command("/whitelist add {}".format(player_name))
             await ctx.send(resp)
 
     @commands.command()
     async def dwl(self, ctx: commands.Command):
-        if (await self.privilegeCheck(ctx, "Admins") and await self.channelCheck(ctx)):
+        allowed_roles = ["Admins"]
+        if (await self.privilegeCheck(ctx, allowed_roles) and await self.channelCheck(ctx)):
             player_name = ctx.message.content[5:]
             resp = self.mcr.command("/whitelist remove {}".format(player_name))
             await ctx.send(resp)
@@ -52,11 +54,11 @@ class MainCog(commands.Cog, name = "main"):
             msg += "If you have any questions or suggestions, please contact primal#7602! Thank you!"
             await ctx.send(msg)
 
-    async def privilegeCheck(self, ctx: commands.Command, roleName):
+    async def privilegeCheck(self, ctx: commands.Command, allowed_roles):
         is_admin = False
 
         for role in ctx.message.author.roles:
-            if (role.name == roleName):
+            if (role.name in allowed_roles):
                 is_admin = True
         
         if (not is_admin):
@@ -66,9 +68,9 @@ class MainCog(commands.Cog, name = "main"):
 
     async def channelCheck(self, ctx: commands.Command):
         is_channel = False
-
+        allowed_channels = [729859164209283104, 729513577186066473]
         # Change this to list to hold more channels.
-        if (ctx.message.channel.id == 729859164209283104):
+        if (ctx.message.channel.id in allowed_channels):
             is_channel = True
 
         return is_channel
