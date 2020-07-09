@@ -1,5 +1,7 @@
 import discord
 import socket
+import asyncio
+import sys
 from mcrcon import MCRcon
 from discord.ext import commands
 from diocraft.diocraft import DioCraft
@@ -11,15 +13,29 @@ from diocraft.common_utils import server_password
 class MainCog(commands.Cog, name = "main"):
     def __init__(self, bot: DioCraft):
         super().__init__()
-        
+
         self.mcr = MCRcon(server_ip, server_password, int(server_port))
-        self.mcr.connect()
+        try:
+            self.mcr.connect()
+        except:
+            print("Unexpected error: {}".format(sys.exc_info()[0]))
 
         self.bot = bot
 
     @commands.command()
+    async def login(self, ctx: commands.Command):
+        allowed_roles = ["Admins"]
+        if (await self.privilegeCheck(ctx, allowed_roles) and await self.channelCheck(ctx)):
+            channel = self.bot.get_channel(729513577186066473)
+            try:
+                self.mcr.connect()
+                await channel.send("Successfully logged into the Minecraft server.")
+            except:
+                await channel.send("Unexpected error: {}".format(sys.exc_info()[0]))
+
+    @commands.command()
     async def awl(self, ctx: commands.Command):
-        allowed_roles = ["Minecraft"]
+        allowed_roles = ["Minecraft", "Admins"]
         if (await self.privilegeCheck(ctx, allowed_roles) and await self.channelCheck(ctx)):
             player_name = ctx.message.content[5:]
             resp = self.mcr.command("/whitelist add {}".format(player_name))
@@ -51,6 +67,7 @@ class MainCog(commands.Cog, name = "main"):
             msg += "/wl - Display list of all players that are whitelisted.\n"
             msg += "/awl <name> - To add someone to the server whitelist.\n"
             msg += "/dwl <name> - To remove someone from the server whitelist.\n\n"
+            msg += "/login - For administrators to connect to the server.\n\n"
             msg += "If you have any questions or suggestions, please contact primal#7602! Thank you!"
             await ctx.send(msg)
 
