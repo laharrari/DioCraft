@@ -94,7 +94,7 @@ class MainCog(commands.Cog, name = "main"):
 
     async def listWhitelist(self, ctx: commands.Command):
         resp = self.mcr.command("/whitelist list").split(" ")
-        result = "The following {} players are whitelisted:\n".format(resp[2])
+        result = "```The following {} players are whitelisted:\n".format(resp[2])
         resp = resp[5:]
         lastName = resp[len(resp) - 1]
         resp = resp[:-1]
@@ -102,13 +102,13 @@ class MainCog(commands.Cog, name = "main"):
         for name in resp:
             result += name[:-1] + "\n"
 
-        result += lastName
+        result += lastName + "```"
 
         await ctx.send(result)
 
     async def listPlayers(self, ctx: commands.Command):
         resp = self.mcr.command("/list").split(" ")
-        result = "There {} players online:\n".format(resp[2])
+        result = "```There {} players online:\n".format(resp[2])
         resp = resp[10:]
         lastName = resp[len(resp) - 1]
         resp = resp[:-1]
@@ -116,6 +116,6 @@ class MainCog(commands.Cog, name = "main"):
         for name in resp:
             result += name[:-1] + "\n"
 
-        result += lastName
+        result += lastName + "```"
 
         await ctx.send(result)
