@@ -15,10 +15,11 @@ class MainCog(commands.Cog, name = "main"):
         super().__init__()
 
         self.mcr = MCRcon(server_ip, server_password, int(server_port))
+
         try:
             self.mcr.connect()
-        except:
-            print("Unexpected error: {}".format(sys.exc_info()[0]))
+        finally:
+            self.mcr.disconnect()
 
         self.bot = bot
 
