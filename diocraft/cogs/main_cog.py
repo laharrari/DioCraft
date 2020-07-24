@@ -18,7 +18,8 @@ class MainCog(commands.Cog, name = "main"):
 
         try:
             self.mcr.connect()
-        finally:
+        except:
+            print("Unexpected error: {}".format(sys.exc_info()[0]))
             self.mcr.disconnect()
 
         self.bot = bot
@@ -33,6 +34,7 @@ class MainCog(commands.Cog, name = "main"):
                 await channel.send("Successfully logged into the Minecraft server.")
             except:
                 await channel.send("Unexpected error: {}".format(sys.exc_info()[0]))
+                self.mcr.disconnect()
 
     @commands.command()
     async def awl(self, ctx: commands.Command):

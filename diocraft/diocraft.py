@@ -17,4 +17,4 @@ class DioCraft(commands.Bot):
     async def on_ready(self):
         print("Bot is ready!")
         channel = self.get_channel(729513577186066473)
-        await channel.send("I have just started up. Please connect me by typing /login.")
+        await channel.send("Oh? You're Launching Me?")
